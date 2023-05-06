@@ -43,7 +43,7 @@ export async function createApp({
 	const isOnline = !useYarn || (await getOnline());
 	const originalDirectory = process.cwd();
 
-	console.log(`Creating a new Next.js app in ${chalk.green(root)}.`);
+	console.log(`Creating a new monorepo in ${chalk.green(root)}.`);
 	console.log();
 
 	process.chdir(root);

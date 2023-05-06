@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-/* eslint-disable import/no-extraneous-dependencies */
 import chalk from "chalk";
-import ciInfo from "ci-info";
 import Commander from "commander";
 import Conf from "conf";
 import fs from "fs";
@@ -124,16 +122,6 @@ async function run(): Promise<void> {
 		process.exit(1);
 	}
 
-	if (program.example === true) {
-		console.error(
-			"Please provide an example name or url, otherwise remove the example option.",
-		);
-		process.exit(1);
-	}
-
-	/**
-	 * Verify the project dir is empty or doesn't exist
-	 */
 	const root = path.resolve(resolvedProjectPath);
 	const appName = path.basename(root);
 	const folderExists = fs.existsSync(root);
@@ -142,67 +130,10 @@ async function run(): Promise<void> {
 		process.exit(1);
 	}
 
-	const example =
-		typeof program.example === "string" && program.example.trim();
 	const preferences = (conf.get("preferences") || {}) as Record<
 		string,
 		boolean | string
 	>;
-	/**
-	 * If the user does not provide the necessary flags, prompt them for whether
-	 * to use TS or JS.
-	 */
-	if (!example) {
-		const defaults: typeof preferences = {
-			typescript: true,
-			eslint: true,
-			tailwind: true,
-			srcDir: false,
-			importAlias: "@/*",
-			customizeImportAlias: false,
-		};
-		const getPrefOrDefault = (field: string) =>
-			preferences[field] ?? defaults[field];
-
-		if (
-			typeof program.importAlias !== "string" ||
-			!program.importAlias.length
-		) {
-			if (ciInfo.isCI) {
-				program.importAlias = "@/*";
-			} else {
-				const styledImportAlias = chalk.hex("#007acc")("import alias");
-
-				const { customizeImportAlias } = await prompts({
-					onState: onPromptState,
-					type: "toggle",
-					name: "customizeImportAlias",
-					message: `Would you like to customize the default ${styledImportAlias}?`,
-					initial: getPrefOrDefault("customizeImportAlias"),
-					active: "Yes",
-					inactive: "No",
-				});
-
-				if (!customizeImportAlias) {
-					program.importAlias = "@/*";
-				} else {
-					const { importAlias } = await prompts({
-						onState: onPromptState,
-						type: "text",
-						name: "importAlias",
-						message: `What ${styledImportAlias} would you like configured?`,
-						initial: getPrefOrDefault("importAlias"),
-						validate: value =>
-							/.+\/\*/.test(value)
-								? true
-								: "Import alias must follow the pattern <prefix>/*",
-					});
-					program.importAlias = importAlias;
-					preferences.importAlias = importAlias;
-				}
-			}
-		}
-	}
 
 	try {
 		await createApp({
@@ -230,14 +161,14 @@ async function notifyUpdate(): Promise<void> {
 		if (res?.latest) {
 			const updateMessage =
 				packageManager === "yarn"
-					? "yarn global add create-that-app"
+					? "yarn global add create-that-monorepo"
 					: packageManager === "pnpm"
-					? "pnpm add -g create-that-app"
-					: "npm i -g create-that-app";
+					? "pnpm add -g create-that-monorepo"
+					: "npm i -g create-that-monorepo";
 
 			console.log(
 				chalk.yellow.bold(
-					"A new version of `create-that-app` is available!",
+					"A new version of `create-that-monorepo` is available!",
 				) +
 					"\n" +
 					"You can update by running: " +
@@ -246,8 +177,8 @@ async function notifyUpdate(): Promise<void> {
 			);
 		}
 		process.exit();
-	} catch {
-		// ignore error
+	} catch (err) {
+		console.error(`ERROR: ${err}`);
 	}
 }
 

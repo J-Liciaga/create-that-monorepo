@@ -1,7 +1,7 @@
 {
 	"name": "create-that-monorepo",
 	"description": "all of the tools you need to get started with development... blazingly fast",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"author": "Josiah Liciaga-Silva<josiah.liciagasilva@pm.me>",
 	"private": false,
 	"license": "MIT",

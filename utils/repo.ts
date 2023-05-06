@@ -10,14 +10,13 @@ import { promisify } from "util";
 const pipeline = promisify(Stream.pipeline);
 
 async function downloadTar(url: string) {
+	console.log("its lit!");
 	const tempFile = join(tmpdir(), `create-that-monorepo.temp-${Date.now()}`);
 	await pipeline(got.stream(url), createWriteStream(tempFile));
 	return tempFile;
 }
 
 export async function downloadAndExtractRepo(root: string, filePath: string) {
-	let branch = "main";
-
 	const tempFile = await downloadTar(
 		`https://codeload.github.com/J-Liciaga/that-monorepo/tar.gz/main`,
 	);
@@ -25,13 +24,9 @@ export async function downloadAndExtractRepo(root: string, filePath: string) {
 	await tar.x({
 		file: tempFile,
 		cwd: root,
-		strip: filePath ? filePath.split("/").length + 1 : 1,
-		filter: p =>
-			p.startsWith(
-				`J-Liciaga-${branch.replace(/\//g, "-")}${
-					filePath ? `/${filePath}/` : "/"
-				}`,
-			),
+		sync: true,
+		strip: 1,
+		filter: p => p.startsWith(`that-monorepo-main`),
 	});
 
 	await fs.unlink(tempFile);

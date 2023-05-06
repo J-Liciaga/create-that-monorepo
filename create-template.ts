@@ -35,6 +35,7 @@ export async function createApp({
 	const appName = path.basename(root);
 
 	await makeDir(root);
+
 	if (!isFolderEmpty(root, appName)) {
 		process.exit(1);
 	}
@@ -99,25 +100,9 @@ export async function createApp({
 	if (hasPackageJson) {
 		console.log("Inside that directory, you can run several commands:");
 		console.log();
-		console.log(
-			chalk.cyan(`  ${packageManager} ${useYarn ? "" : "run "}dev`),
-		);
-		console.log("    Starts the development server.");
+		console.log("visit your package.json to see the scripts available");
 		console.log();
-		console.log(
-			chalk.cyan(`  ${packageManager} ${useYarn ? "" : "run "}build`),
-		);
-		console.log("    Builds the app for production.");
-		console.log();
-		console.log(chalk.cyan(`  ${packageManager} start`));
-		console.log("    Runs the built app in production mode.");
-		console.log();
-		console.log("We suggest that you begin by typing:");
-		console.log();
-		console.log(chalk.cyan("  cd"), cdpath);
-		console.log(
-			`  ${chalk.cyan(`${packageManager} ${useYarn ? "" : "run "}dev`)}`,
-		);
+		console.log("happy hacking nerds...");
 	}
 	console.log();
 }

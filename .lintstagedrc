@@ -1,0 +1,8 @@
+{
+    "*.{js,ts,tsx,json,css}": [
+        "prettier --write"
+    ],
+    "utils/*.{js,ts,tsx,json,css}": [
+        "prettier --write"
+    ]
+}
